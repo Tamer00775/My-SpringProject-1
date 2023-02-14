@@ -1,0 +1,4 @@
+driver=org.postgresql.Driver
+url=jdbc:postgresql://localhost:5432/first_db_project
+database_user=postgres
+password=ktr192511
