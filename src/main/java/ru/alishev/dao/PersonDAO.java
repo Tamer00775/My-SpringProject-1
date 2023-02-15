@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import ru.alishev.models.Book;
 import ru.alishev.models.Person;
 
 import java.util.List;
@@ -26,6 +27,10 @@ public class PersonDAO {
     public Person show(int id) {
         return jdbcTemplate.query("SELECT * FROM Person WHERE id=?", new Object[]{id}, new BeanPropertyRowMapper<>(Person.class))
                 .stream().findAny().orElse(null);
+    }
+
+    public List<Book> showBook(int id){
+        return jdbcTemplate.query("SELECT * FROM BOOK WHERE PERSON_ID=?", new Object[]{id}, new BeanPropertyRowMapper<>(Book.class));
     }
 
     public void save(Person person) {

@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import ru.alishev.models.Book;
+import ru.alishev.models.Person;
 
 import java.util.List;
 
@@ -18,6 +19,10 @@ public class BookDAO {
     }
     public List<Book> index(){
         return jdbcTemplate.query("SELECT * FROM BOOK", new BeanPropertyRowMapper<>(Book.class));
+    }
+   public List<Person> showPerson(int id){
+        //return jdbcTemplate.query("Select * from Person join Book on book.person_id = person.id=?", id);
+        return null;
     }
     public void save(Book book){
         jdbcTemplate.update("INSERT INTO BOOK(name, author, year) values(?, ?, ?)",book.getName(), book.getAuthor(), book.getYear());

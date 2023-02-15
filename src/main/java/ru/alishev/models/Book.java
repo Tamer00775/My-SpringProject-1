@@ -12,6 +12,8 @@ public class Book {
     @NotEmpty(message = "Kartayev Tamerlan")
     @Pattern(regexp = "[A-Z]\\w+ [A-Z]\\w+")
     private String author;
+
+    private int person_id;
     @Max(value=2022, message = "You not correct add book! Our book is till due 2022")
     private int year;
 
@@ -54,5 +56,13 @@ public class Book {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getPerson_id() {
+        return person_id;
+    }
+
+    public void setPerson_id(int person_id) {
+        this.person_id = person_id;
     }
 }

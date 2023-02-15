@@ -9,9 +9,19 @@
 <p th:text="${'Name:' + book.getName() + ',' + 'Year: ' + book.getYear()}"></p>
 <p th:text="${'Author' + ':' +book.getAuthor()}"></p>
 
+
+<form th:method="POST" th:action="@{/books/add}">
+    <label for ="person">Choose one person</label>
+    <select th:object = "${person}" th.field="*{id}" id="person">
+        <option th:each="person : ${people}" th:value="${person.getId()}" th:text="${person.getName()}"></option>
+    </select>
+
+    <input type="submit" value="Accept admin">
+</form>
+
 <a th:href="@{/books/{id}/edit(id=${book.getId()})}">Edit</a>
 
-<form th:method="DELETE" th:action="@{books/{id}(id=${book.getId()})}">
+<form th:method="DELETE" th:action="@{/books/{id}(id=${book.getId()})}">
     <input type="submit" value="Delete book">
 </form>
 </body>

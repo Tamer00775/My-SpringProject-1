@@ -3,11 +3,13 @@ package ru.alishev.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.alishev.dao.BookDAO;
+import ru.alishev.dao.PersonDAO;
 import ru.alishev.models.Book;
 import ru.alishev.models.Person;
 
@@ -17,9 +19,11 @@ import javax.validation.Valid;
 @RequestMapping("/books")
 public class BookController {
     private final BookDAO bookDAO;
+    private final PersonDAO personDAO;
     @Autowired
-    public BookController(BookDAO bookDAO){
+    public BookController(BookDAO bookDAO, PersonDAO personDAO){
         this.bookDAO = bookDAO;
+        this.personDAO = personDAO;
     }
 
     @GetMapping()
@@ -42,6 +46,7 @@ public class BookController {
     @GetMapping("/{id}")
     public String show(@PathVariable("id") int id, Model model){
         model.addAttribute("book", bookDAO.show(id));
+        model.addAttribute("people", personDAO.index());
         return "books/show";
     }
 
@@ -63,4 +68,11 @@ public class BookController {
         bookDAO.delete(id);
         return "redirect:/books";
     }
+
+    @PostMapping("/add")
+    public String makePerson(@ModelAttribute("person") Person person){
+        System.out.println(person.getId());
+        return "redirect:/books";
+    }
+
 }
