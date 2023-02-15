@@ -4,11 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
 import ru.alishev.models.Book;
 import ru.alishev.models.Person;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class BookDAO {
@@ -20,9 +20,8 @@ public class BookDAO {
     public List<Book> index(){
         return jdbcTemplate.query("SELECT * FROM BOOK", new BeanPropertyRowMapper<>(Book.class));
     }
-   public List<Person> showPerson(int id){
-        //return jdbcTemplate.query("Select * from Person join Book on book.person_id = person.id=?", id);
-        return null;
+   public Person showPerson(int id){
+       return jdbcTemplate.query("SELECT * FROM Person WHERE person.id=(select person_id from book where id=?)", new Object[]{id}, new BeanPropertyRowMapper<>(Person.class)).stream().findAny().orElse(null);
     }
     public void save(Book book){
         jdbcTemplate.update("INSERT INTO BOOK(name, author, year) values(?, ?, ?)",book.getName(), book.getAuthor(), book.getYear());
@@ -37,6 +36,19 @@ public class BookDAO {
 
     public void delete(int id){
         jdbcTemplate.update("Delete from Book where id=?", id);
+    }
+    public void deletePeople(int id){
+        jdbcTemplate.update("Update Book set person_id = null where id=?", id);
+    }
+    public boolean checkPerson(int id){
+        Book book = show(id);
+        if(book == null)
+            return false;
+        else
+            return true;
+    }
+    public void addPeople(int personId, int bookId){
+        jdbcTemplate.update("Update Book set person_id =? where id=?", personId , bookId);
     }
 
 }

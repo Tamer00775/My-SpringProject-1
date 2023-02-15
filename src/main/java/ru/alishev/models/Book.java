@@ -6,14 +6,13 @@ import javax.validation.constraints.Pattern;
 
 public class Book {
     int id;
-    @NotEmpty
-    @Pattern(regexp = "[A-Z]\\w+", message = "Ex: Name")
+    @NotEmpty(message = "Name of book not should be empty!")
     private String name;
     @NotEmpty(message = "Kartayev Tamerlan")
     @Pattern(regexp = "[A-Z]\\w+ [A-Z]\\w+")
     private String author;
 
-    private int person_id;
+    private Integer person_id;
     @Max(value=2022, message = "You not correct add book! Our book is till due 2022")
     private int year;
 
@@ -58,11 +57,11 @@ public class Book {
         this.name = name;
     }
 
-    public int getPerson_id() {
+    public Integer getPerson_id() {
         return person_id;
     }
 
-    public void setPerson_id(int person_id) {
+    public void setPerson_id(Integer person_id) {
         this.person_id = person_id;
     }
 }
