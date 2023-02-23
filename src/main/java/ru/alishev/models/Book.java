@@ -1,18 +1,36 @@
 package ru.alishev.models;
 
+import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
-
+@Entity
+@Table(name="book")
 public class Book {
+    @Id
+    @Column(name="id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     int id;
     @NotEmpty(message = "Name of book not should be empty!")
+    @Column(name="name")
     private String name;
     @NotEmpty(message = "Kartayev Tamerlan")
+    @Column(name="author")
     @Pattern(regexp = "[A-Z]\\w+ [A-Z]\\w+")
     private String author;
+    @ManyToOne
+    @JoinColumn(name="person_id", referencedColumnName = "id")
+    private Person owner;
 
-    private Integer person_id;
+    public Person getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Person owner) {
+        this.owner = owner;
+    }
+
     @Max(value=2022, message = "You not correct add book! Our book is till due 2022")
     private int year;
 
@@ -57,11 +75,5 @@ public class Book {
         this.name = name;
     }
 
-    public Integer getPerson_id() {
-        return person_id;
-    }
 
-    public void setPerson_id(Integer person_id) {
-        this.person_id = person_id;
-    }
 }
