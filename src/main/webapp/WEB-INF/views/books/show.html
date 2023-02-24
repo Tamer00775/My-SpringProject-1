@@ -11,6 +11,7 @@
 <div th:if="${book.getOwner() != null}">
     <label>This book is not available</label>
     <br/>
+    <p>Owner: </p>
 <p th:text="${bperson.getName() + ' ' + bperson.getAge()}"></p>
 
     <form th:method="DELETE" th:action="@{/books/{id}/delete(id=${book.getId()})}">

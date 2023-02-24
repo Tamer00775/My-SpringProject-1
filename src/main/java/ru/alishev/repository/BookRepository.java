@@ -8,7 +8,6 @@ import ru.alishev.models.Person;
 import java.util.List;
 @Repository
 public interface BookRepository extends JpaRepository<Book, Integer> {
-
-    List<Book> findByOwner_Id(int id);
+    public List<Book> searchBookByNameStartingWith(String s);
 
 }

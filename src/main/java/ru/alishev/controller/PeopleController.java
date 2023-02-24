@@ -37,7 +37,6 @@ public class PeopleController {
     public String show(@PathVariable("id") int id, Model model) {
         model.addAttribute("person", peopleService.findOne(id));
         model.addAttribute("bookOfPerson", peopleService.findBooksByPersonId(id));
-        System.out.println(peopleService.findOne(id).getBooks().get(0));
         return "people/show";
     }
 

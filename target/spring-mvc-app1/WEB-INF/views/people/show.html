@@ -15,7 +15,7 @@
 <div th:if="${bookOfPerson.size() != 0}">
 <p>Books of person: </p>
 <div th:each="book : ${bookOfPerson}">
-  <a th:text="${book.getName()+ ', ' +book.getAuthor() + ', ' + book.getYear()}">user</a>
+  <a th:style="${book.isReserved() ? 'color:green': 'color:red'}" th:text="${book.getName()+ ', ' +book.getAuthor() + ', ' + book.getYear()}">user</a>
 </div>
 
 </div>

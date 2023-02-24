@@ -8,10 +8,7 @@ import ru.alishev.models.Book;
 import ru.alishev.models.Person;
 import ru.alishev.repository.PersonRepository;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -49,6 +46,15 @@ public class PeopleService {
         Optional<Person> person = personRepository.findById(id);
         if(person.isPresent()){
             Hibernate.initialize(person.get().getBooks());
+            List<Book> books = person.get().getBooks();
+            Date date = new Date();
+            for(Book book : books){
+                long time = date.getTime() - book.getDate().getTime();
+                if(time > 864000000)
+                    book.setReserved(false);
+                else
+                    book.setReserved(true);
+            }
             return person.get().getBooks();
         }
         else {

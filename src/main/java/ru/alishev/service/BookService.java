@@ -1,12 +1,16 @@
 package ru.alishev.service;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.alishev.models.Book;
 import ru.alishev.models.Person;
 import ru.alishev.repository.BookRepository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,14 +22,23 @@ public class BookService {
     public BookService(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
     }
-    public List<Book> findAll(){
-        return bookRepository.findAll();
+    public List<Book> findAll(boolean b){
+        if(b){
+            return bookRepository.findAll(Sort.by("year"));
+        }
+        else
+            return bookRepository.findAll();
+    }
+
+    public List<Book> findAll(int page, int page_of_books){
+        return bookRepository.findAll(PageRequest.of(page, page_of_books)).getContent();
     }
 
     public Book find(int id){
         Optional<Book> bookOptional = bookRepository.findById(id);
         return bookOptional.orElse(null) ;
     }
+
     @Transactional
     public void save(Book book){
         bookRepository.save(book);
@@ -39,8 +52,30 @@ public class BookService {
     public void delete(int id){
         bookRepository.deleteById(id);
     }
-    public List<Book> findByOwner(Person person){
-        return bookRepository.findByOwner_Id(person.getId());
+    public Person findOwner(int id){
+        Person person = bookRepository.getOne(id).getOwner();
+        Hibernate.initialize(person);
+        return person;
+    }
+    @Transactional
+    public void savePerson(Person person, int id){
+        Optional<Book> book = bookRepository.findById(id);
+        if(book.isPresent()) {
+            book.get().setOwner(person);
+            book.get().setDate(new Date());
+            Hibernate.initialize(book);
+        }
+    }
+
+    @Transactional
+    public void deletePerson(int id){
+        Book book = bookRepository.getOne(id);
+        book.setOwner(null);
+        bookRepository.save(book);
+    }
+
+    public List<Book> search(String s){
+        return bookRepository.searchBookByNameStartingWith(s);
     }
 
 

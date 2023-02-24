@@ -25,11 +25,15 @@ public class BookController {
     }
 
     @GetMapping()
-    public String index(Model model){
-        model.addAttribute("books", bookService.findAll());
+    public String index(Model model, @RequestParam(value = "page", required = false)Integer page,
+                        @RequestParam(value = "books_per_page", required = false)Integer books_per_page,
+                        @RequestParam(value = "sort_by_year", required = false) boolean sort){
+        if(page == null || books_per_page == null)
+            model.addAttribute("books", bookService.findAll(sort));
+        else
+            model.addAttribute("books", bookService.findAll(page, books_per_page));
         return "books/index";
     }
-
     @GetMapping("/new")
     public String newBook(@ModelAttribute("book")Book book){
         return "/books/new";
@@ -64,26 +68,39 @@ public class BookController {
 
     @GetMapping("/{id}")
     public String show(@PathVariable("id") int id, Model model){
-        Person bperson = bookService.find(id).getOwner();
+        Person bperson = bookService.findOwner(id);
         Person person = new Person();
-        model.addAttribute("book", peopleService.findBooksByPersonId(id));
+        model.addAttribute("book", bookService.find(id));
         model.addAttribute("people", peopleService.findAll());
         model.addAttribute("person", person);
         model.addAttribute("bperson", bperson);
         return "/books/show";
     }
 
+
+
     @PatchMapping ("{id}/add")
     public String makePerson(@ModelAttribute("person") Person person, @PathVariable("id") int id){
         System.out.println("person id after submit: " + person.getId() + "BOOK ID: " + id);
-       //  bookDAO.addPeople(person.getId(), id);
-        bookService.find(id).setOwner(person);
+        bookService.savePerson(person, id);
         return "redirect:/books";
     }
 
     @DeleteMapping("{id}/delete")
     public String deletePerson(@ModelAttribute("person")Person person, @PathVariable("id") int id){
-        bookService.find(id).setOwner(null);
-        return "redirect: /books";
+        bookService.deletePerson(id);
+        return "redirect:/books";
+    }
+    @GetMapping("/search")
+    public String search(){
+        return "/books/search";
+    }
+
+    @PostMapping("/search")
+    public String searchBook(Model model, @RequestParam("query") String bookName){
+        model.addAttribute("books", bookService.search(bookName));
+        Book book = new Book();
+        model.addAttribute("book",book);
+        return "books/search";
     }
 }
